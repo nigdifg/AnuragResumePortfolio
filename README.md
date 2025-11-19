@@ -1,73 +1,138 @@
-# React + TypeScript + Vite
+# Anurag - Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive portfolio website built with cutting-edge web technologies.
 
-Currently, two official plugins are available:
+![Portfolio Preview](https://github.com/user-attachments/assets/31eebffe-522f-4a5c-955b-dfa8ddd47a3d)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+- ✨ Modern, clean design with gradient backgrounds
+- 🎨 Fully responsive layout for all devices
+- ⚡ Fast performance with Vite
+- 🎭 Smooth animations using Framer Motion
+- 📱 Mobile-friendly navigation
+- 🎯 SEO-optimized structure
+- 📧 Contact form ready for integration
+- 🚀 Production-ready build configuration
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Technologies Used
 
-## Expanding the ESLint configuration
+- **React 19** - Modern UI library
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Framer Motion** - Smooth animations and transitions
+- **React Icons** - Icon library for social media and UI elements
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js 18+ installed
+- npm or yarn package manager
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/nigdifg/AnuragResumePortfolio.git
+cd AnuragResumePortfolio
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open your browser and visit `http://localhost:5173`
+
+## 🏗️ Build for Production
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+The build output will be in the `dist` directory.
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # React components
+│   ├── Hero.tsx        # Landing section
+│   ├── About.tsx       # About section
+│   ├── Skills.tsx      # Skills and technologies
+│   ├── Projects.tsx    # Featured projects
+│   ├── Contact.tsx     # Contact form and info
+│   ├── Navigation.tsx  # Navigation bar
+│   └── Footer.tsx      # Footer component
+├── App.tsx             # Main app component
+├── main.tsx            # Application entry point
+└── index.css           # Global styles with Tailwind
+```
+
+## 🎨 Customization
+
+### Update Personal Information
+
+Edit the component files in `src/components/` to update:
+- Personal bio in `About.tsx`
+- Skills and technologies in `Skills.tsx`
+- Project portfolio in `Projects.tsx`
+- Contact information in `Contact.tsx`
+- Social media links in `Hero.tsx` and `Footer.tsx`
+
+### Change Colors
+
+Update the color scheme in `tailwind.config.js`:
 
 ```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+theme: {
+  extend: {
+    colors: {
+      primary: '#3B82F6',    // Your primary color
+      secondary: '#8B5CF6',  // Your secondary color
+      dark: '#0F172A',       // Dark background
+      light: '#F8FAFC',      // Light background
     },
   },
-])
+}
 ```
+
+## 📝 Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## 🤝 Contributing
+
+Feel free to fork this project and customize it for your own portfolio!
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👤 Author
+
+**Anurag**
+
+- GitHub: [@nigdifg](https://github.com/nigdifg)
+
+---
+
+Made with ❤️ using React & Tailwind CSS
