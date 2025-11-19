@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Terminal, User, Briefcase, FolderOpen, Mail, X, Minus, 
+  Terminal, User, Briefcase, FolderOpen, Mail, X, Minus, Download,
   Maximize2, Github, Linkedin, Globe, Cpu, Code, 
   ChevronRight, Wifi, Battery, Search, Command, LayoutGrid,
-  ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle
+  ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle, ChevronDown, Minimize2, Sparkles, MessageSquare, GraduationCap, BookOpen
 } from 'lucide-react';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// --- CONFIGURATION ---
+// ⚠️ REPLACE THIS WITH YOUR ACTUAL GEMINI API KEY
+const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
 
 // --- SYSTEM DATA ---
 const SYSTEM_DATA = {
@@ -19,7 +24,7 @@ const SYSTEM_DATA = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anurag&backgroundColor=b6e3f4&clothing=blazerAndShirt",
     social: {
       linkedin: "https://www.linkedin.com/in/anurag-91a137203/",
-      github: "https://github.com/anurag" // Add your actual github username if you have one
+      github: "https://github.com/anurag" 
     }
   },
   experience: [
@@ -30,7 +35,14 @@ const SYSTEM_DATA = {
       date: "Sept 2024 - Present",
       location: "New Delhi",
       type: "Full-time",
-      description: "Migrated legacy Talend ETL jobs to scalable microservices using ADF and Spring Boot. Optimized backend with Redis lookup & Azure Cosmos DB.",
+      points: [
+        "Migrated legacy Talend ETL jobs to scalable microservices using ADF and Java Spring Boot, ensuring high performance and reliability.",
+        "Designed RESTful APIs and AOP for logging and exception handling, reducing code duplication by 25%.",
+        "Monitored and debugged Spring Boot applications with Azure AppInsights, Log Analytics, and Kubernetes dashboards, reducing incident resolution time by 20%.",
+        "Integrated Redis lookup and Azure Cosmos DB (SQL API) to manage large datasets operations within backend services boosting application and responsiveness by 40% for real-time analytics.",
+        "Collaborated with cross-functional teams to gather requirements and deliver backend solutions; performed SQL query optimization and data modeling.",
+        "Built and optimized 10+ ADF pipelines, enabling reusable components, efficient data extraction, transformation, resolving critical production failures and loading across systems."
+      ],
       color: "bg-blue-500"
     },
     {
@@ -40,7 +52,10 @@ const SYSTEM_DATA = {
       date: "June 2024 - Aug 2024",
       location: "Chennai",
       type: "Internship",
-      description: "Built dynamic admin dashboards and managed MongoDB backend with client-side caching.",
+      points: [
+        "Created dynamic dashboards, charts, graphs, Map and an admin portal.",
+        "Implemented routing using React with params, useNavigation, and routes; managed backend with MongoDB and client-side data with IndexedDB."
+      ],
       color: "bg-purple-500"
     },
     {
@@ -50,17 +65,25 @@ const SYSTEM_DATA = {
       date: "Apr 2022 - June 2022",
       location: "Ghaziabad",
       type: "Internship",
-      description: "Developed interactive web apps using HTML5 Canvas and heavy DOM manipulation.",
+      points: [
+        "Orchestrated hands-on experience in JavaScript, Tailwind CSS, and other web technologies including DOM manipulation and javascript object model.",
+        "Developed a web application utilizing canvas and front-end structures, enhancing user interactivity and responsiveness."
+      ],
       color: "bg-orange-500"
-    },
+    }
+  ],
+  education: [
     {
         id: 4,
         company: "KIIT University",
-        role: "B.Tech in IT",
+        role: "B.Tech in Information Technology",
         date: "2020 - 2024",
         location: "Bhubaneswar",
         type: "Education",
-        description: "Graduated with 9.03 CGPA. Coursework in DSA, OS, DBMS, OOP.",
+        points: [
+            "Graduated with 9.03 CGPA.",
+            "Relevant Coursework: Data Structures, Database Management, Operating Systems, OOP."
+        ],
         color: "bg-green-500"
     }
   ],
@@ -69,21 +92,29 @@ const SYSTEM_DATA = {
       title: "Brain Busters",
       icon: "🧠",
       desc: "Interactive puzzle app assessing critical thinking.",
-      tech: "React + Firebase",
+      tech: "React.js, Redux, Firebase, Material UI",
+      points: [
+          "Designed an interactive Puzzle assessing the user's decision-making and critical thinking abilities and Activity Dashboard to display performance metrics.",
+          "Tracked time for clues and accuracy and Admin Panel for user performance."
+      ],
       status: "Live"
     },
     {
       title: "My-Diary",
       icon: "📔",
-      desc: "Secure poetry blogging platform with JWT auth.",
-      tech: "MERN Stack",
+      desc: "A MERN Full-Stack Poetry Blogging Application.",
+      tech: "React.js, Javascript, MongoDB",
+      points: [
+          "Enabled users to post and read poetry, as well as leave comments.",
+          "Provided users with the ability to authorization (JSON Web token), create, edit, and delete their own poetry, and comment on others' poetry."
+      ],
       status: "GitHub"
     }
   ],
   skills: {
-    languages: ["Java", "C/C++", "SQL", "JavaScript"],
-    frameworks: ["Spring Boot", "React.js", "Node.js"],
-    tools: ["Azure ADF", "Linux", "Git", "Talend"]
+    languages: ["C/C++", "Java", "SQL", "Javascript"],
+    frameworks: ["Spring Boot", "React.js"],
+    tools: ["Azure Data Factory", "Linux", "Python", "GitHub", "Node.js", "Talend studio"]
   }
 };
 
@@ -110,8 +141,6 @@ const TopBar = () => {
          <span className="font-semibold">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
       </div>
 
-      <div className="md:hidden"></div>
-
       <div className="flex items-center gap-3 md:gap-4">
         <div className="flex items-center gap-1 md:gap-2 opacity-80">
           <Signal size={14} className="md:hidden" />
@@ -124,27 +153,52 @@ const TopBar = () => {
   );
 };
 
-const Window = ({ app, onClose, isFocused, onFocus }) => {
+const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle }) => {
   const isMobile = window.innerWidth < 768; 
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  const toggleMaximize = () => {
+    const newState = !isMaximized;
+    setIsMaximized(newState);
+    if (onMaximizeToggle) onMaximizeToggle(newState);
+  };
+
+  const windowVariants = {
+    initial: { scale: isMobile ? 0.8 : 0.9, opacity: 0, y: isMobile ? 100 : 20, borderRadius: "2rem" },
+    animate: (maximized) => ({ 
+      scale: 1, 
+      opacity: 1, 
+      y: 0, 
+      borderRadius: maximized || isMobile ? "0rem" : "0.75rem",
+      width: maximized ? "100vw" : (isMobile ? "100%" : "800px"),
+      height: maximized ? "100vh" : (isMobile ? "100%" : "600px"),
+      top: maximized ? 0 : (isMobile ? 0 : 80),
+      left: maximized ? 0 : (isMobile ? 0 : 80),
+    }),
+    exit: { scale: isMobile ? 0.8 : 0.9, opacity: 0, y: isMobile ? 100 : 20, borderRadius: "2rem" }
+  };
 
   return (
     <motion.div
-      initial={{ scale: isMobile ? 0.8 : 0.9, opacity: 0, y: isMobile ? 100 : 20, borderRadius: "2rem" }}
-      animate={{ scale: 1, opacity: 1, y: 0, borderRadius: isMobile ? "0rem" : "0.75rem" }}
-      exit={{ scale: isMobile ? 0.8 : 0.9, opacity: 0, y: isMobile ? 100 : 20, borderRadius: "2rem" }}
+      custom={isMaximized}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={windowVariants}
       transition={{ type: "spring", damping: 25, stiffness: 300 }}
-      drag={!isMobile}
+      drag={!isMobile && !isMaximized}
       dragMomentum={false}
       onPointerDown={onFocus}
       className={`
         fixed md:absolute 
-        ${isMobile ? 'inset-0 z-50 bg-black' : 'top-20 left-20 w-[800px] h-[600px] rounded-xl border border-white/10 shadow-2xl bg-[#1c1c1c]/95'}
+        ${isMobile ? 'inset-0 z-50 bg-black' : 'bg-[#1c1c1c]/95 border border-white/10 shadow-2xl'}
         backdrop-blur-xl overflow-hidden flex flex-col
         ${isFocused && !isMobile ? 'z-40 ring-1 ring-white/20' : ''}
         ${!isMobile && !isFocused ? 'z-10 opacity-90' : ''}
+        ${isMaximized ? 'z-50 !m-0 !fixed' : ''}
       `}
     >
-      <div className={`h-12 md:h-10 flex items-center justify-between px-4 cursor-grab active:cursor-grabbing ${isMobile ? 'bg-[#121212] pt-safe-top' : 'bg-white/5 border-b border-white/5'}`}>
+      <div className={`h-12 md:h-10 flex items-center justify-between px-4 cursor-grab active:cursor-grabbing ${isMobile ? 'bg-[#121212] pt-safe-top' : 'bg-white/5 border-b border-white/5'}`} onDoubleClick={!isMobile ? toggleMaximize : undefined}>
         {isMobile && (
           <button onClick={onClose} className="p-2 -ml-2 text-blue-400 flex items-center gap-1">
             <ArrowLeft size={20} /> <span className="text-base">Back</span>
@@ -152,14 +206,20 @@ const Window = ({ app, onClose, isFocused, onFocus }) => {
         )}
 
         {!isMobile && (
-          <div className="flex items-center gap-2">
-            <div onClick={onClose} className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 cursor-pointer flex items-center justify-center group"><X size={8} className="opacity-0 group-hover:opacity-100 text-black" /></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 cursor-pointer"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 cursor-pointer"></div>
+          <div className="flex items-center gap-2 group">
+            <button onClick={onClose} className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-black/50 hover:text-black">
+                <X size={8} className="opacity-0 group-hover:opacity-100" />
+            </button>
+            <button onClick={onMinimize} className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 flex items-center justify-center text-black/50 hover:text-black">
+                <Minus size={8} className="opacity-0 group-hover:opacity-100" />
+            </button>
+            <button onClick={toggleMaximize} className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center text-black/50 hover:text-black">
+                {isMaximized ? <Minimize2 size={8} className="opacity-0 group-hover:opacity-100" /> : <Maximize2 size={8} className="opacity-0 group-hover:opacity-100" />}
+            </button>
           </div>
         )}
 
-        <div className="text-base md:text-sm font-medium text-gray-200 md:text-gray-400 flex items-center gap-2">
+        <div className="text-base md:text-sm font-medium text-gray-200 md:text-gray-400 flex items-center gap-2 select-none">
           {!isMobile && app.icon} {app.title}
         </div>
         
@@ -181,81 +241,390 @@ const Window = ({ app, onClose, isFocused, onFocus }) => {
 
 // --- APP CONTENTS ---
 
-const ResumeApp = () => (
-  <div className="flex flex-col md:flex-row h-full bg-white text-slate-800">
-    {/* Sidebar */}
-    <div className="w-full md:w-64 bg-[#f8f9fa] md:bg-[#181818] border-b md:border-r border-gray-200 md:border-white/5 p-6 md:p-4 flex flex-col gap-4 md:text-white">
-      <div className="flex md:block items-center gap-4">
-        <img src={SYSTEM_DATA.profile.avatar} className="w-16 h-16 md:w-24 md:h-24 rounded-full md:mx-auto border-2 border-blue-500/50" />
-        <div className="text-left md:text-center">
-          <h2 className="text-xl font-bold text-slate-900 md:text-white">{SYSTEM_DATA.profile.name}</h2>
-          <p className="text-xs text-blue-600 md:text-blue-400">{SYSTEM_DATA.profile.role}</p>
-        </div>
-      </div>
-      
-      <div className="hidden md:block mt-4 space-y-2 text-sm text-gray-400">
-        <div className="p-2 bg-white/10 rounded flex items-center gap-2 text-white">
-          <User size={16} /> Profile
-        </div>
-        <div className="p-2 hover:bg-white/5 rounded flex items-center gap-2">
-          <Briefcase size={16} /> Experience
-        </div>
-      </div>
+const ResumeApp = () => {
+    const [activeSection, setActiveSection] = useState('profile');
+    const [expandedExp, setExpandedExp] = useState(null);
+    const [expandedProj, setExpandedProj] = useState(null);
 
-      <div className="md:mt-auto md:pt-4 md:border-t border-white/5">
-        <button onClick={() => window.print()} className="w-full py-3 md:py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg">
-           Download Resume PDF
-        </button>
-      </div>
-    </div>
+    const toggleExp = (id) => setExpandedExp(expandedExp === id ? null : id);
+    const toggleProj = (idx) => setExpandedProj(expandedProj === idx ? null : idx);
 
-    {/* Main Document Area */}
-    <div className="flex-1 p-6 md:p-12 overflow-y-auto pb-20 md:pb-0">
-      <div className="max-w-3xl mx-auto space-y-8">
-        <div className="border-b pb-6">
-          <h1 className="text-3xl font-bold uppercase text-slate-900 hidden md:block">{SYSTEM_DATA.profile.name}</h1>
-          <p className="text-slate-600 text-sm md:text-base leading-relaxed mt-2">{SYSTEM_DATA.profile.about}</p>
+    const MenuButton = ({ id, label, icon: Icon }) => (
+      <button 
+        onClick={() => setActiveSection(id)}
+        className={`w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition-all ${activeSection === id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+      >
+        <Icon size={18} />
+        <span className="font-medium">{label}</span>
+        {activeSection === id && <ChevronRight size={16} className="ml-auto" />}
+      </button>
+    );
+
+    return (
+      <div className="flex flex-col md:flex-row h-full bg-white text-slate-800 overflow-hidden">
+        {/* Left Sidebar Navigation */}
+        <div className="w-full md:w-72 bg-[#181818] border-b md:border-r border-white/5 p-6 flex flex-col gap-6 md:h-full">
+          
+          {/* Profile Summary Card */}
+          <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
+            <div className="relative inline-block">
+              <img src={SYSTEM_DATA.profile.avatar} className="w-20 h-20 rounded-full border-2 border-blue-500 shadow-xl mb-3 mx-auto" />
+              <span className="absolute bottom-3 right-0 w-5 h-5 bg-green-500 border-2 border-[#181818] rounded-full"></span>
+            </div>
+            <h2 className="text-lg font-bold text-white">{SYSTEM_DATA.profile.name}</h2>
+            <p className="text-xs text-blue-400 font-medium mb-4">{SYSTEM_DATA.profile.role}</p>
+            <div className="flex justify-center gap-3">
+               <a href={SYSTEM_DATA.profile.social.linkedin} target="_blank" className="p-2 bg-white/5 rounded-lg hover:bg-blue-600 hover:text-white text-gray-400 transition-colors"><Linkedin size={16}/></a>
+               <a href={`mailto:${SYSTEM_DATA.profile.email}`} className="p-2 bg-white/5 rounded-lg hover:bg-red-500 hover:text-white text-gray-400 transition-colors"><Mail size={16}/></a>
+            </div>
+          </div>
+          
+          {/* Navigation Menu */}
+          <div className="space-y-1 flex-1 overflow-y-auto">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-4">Menu</div>
+            <MenuButton id="profile" label="Profile Overview" icon={User} />
+            <MenuButton id="education" label="Education" icon={GraduationCap} />
+            <MenuButton id="experience" label="Experience" icon={Briefcase} />
+            <MenuButton id="projects" label="Projects" icon={FolderOpen} />
+            <MenuButton id="skills" label="Skills" icon={Cpu} />
+          </div>
+  
+          <div className="pt-4 border-t border-white/10">
+            <button onClick={() => window.print()} className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors">
+               <Download size={14}/> Download PDF
+            </button>
+          </div>
         </div>
-
-        {/* CAREER TIMELINE GRAPH */}
-        <section>
-          <h3 className="text-xs font-bold uppercase text-slate-400 mb-6 tracking-wider flex items-center gap-2">
-             <Briefcase size={14} /> Career Timeline
-          </h3>
-          <div className="relative pl-4 space-y-8">
-            {/* Vertical Line */}
-            <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gray-200"></div>
-
-            {SYSTEM_DATA.experience.map((item) => (
-              <div key={item.id} className="relative pl-8 group">
-                {/* Dot */}
-                <div className={`absolute left-0 top-1.5 w-6 h-6 rounded-full border-4 border-white ${item.color} shadow-md z-10 group-hover:scale-110 transition-transform`}></div>
-                
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 hover:border-blue-200 transition-colors">
-                   <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-slate-800">{item.role}</h4>
-                      <span className="text-xs font-mono text-slate-500 bg-white px-2 py-1 rounded border">{item.date}</span>
+  
+        {/* Right Content Area */}
+        <div className="flex-1 bg-slate-50 p-6 md:p-12 overflow-y-auto h-full">
+          <div className="max-w-3xl mx-auto">
+            
+            {/* PROFILE OVERVIEW */}
+            {activeSection === 'profile' && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                <h1 className="text-3xl font-bold text-slate-900 mb-6">Profile Overview</h1>
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
+                   <p className="text-lg text-slate-600 leading-relaxed mb-6">{SYSTEM_DATA.profile.about}</p>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg">
+                        <Mail className="text-blue-500" size={20} />
+                        <div>
+                          <div className="text-xs text-slate-400 uppercase font-bold">Email</div>
+                          <div className="text-sm font-medium">{SYSTEM_DATA.profile.email}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg">
+                        <Phone className="text-green-500" size={20} />
+                        <div>
+                          <div className="text-xs text-slate-400 uppercase font-bold">Phone</div>
+                          <div className="text-sm font-medium">{SYSTEM_DATA.profile.phone}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg">
+                        <Globe className="text-purple-500" size={20} />
+                        <div>
+                          <div className="text-xs text-slate-400 uppercase font-bold">Location</div>
+                          <div className="text-sm font-medium">{SYSTEM_DATA.profile.location}</div>
+                        </div>
+                      </div>
                    </div>
-                   <div className="text-sm text-blue-600 font-medium mb-2">{item.company} • {item.location}</div>
-                   <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              </motion.div>
+            )}
 
-        <section>
-          <h3 className="text-xs font-bold uppercase text-slate-400 mb-4 tracking-wider">Tech Stack</h3>
-          <div className="flex flex-wrap gap-2">
-             {[...SYSTEM_DATA.skills.languages, ...SYSTEM_DATA.skills.frameworks].map(s => (
-               <span key={s} className="px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded-full border border-slate-200">{s}</span>
-             ))}
+            {/* EDUCATION */}
+            {activeSection === 'education' && (
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                    <h1 className="text-3xl font-bold text-slate-900 mb-6">Education</h1>
+                    <div className="space-y-6">
+                        {SYSTEM_DATA.education.map((edu) => (
+                            <div key={edu.id} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-green-500">
+                                <div className="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-slate-900">{edu.role}</h3>
+                                        <div className="text-green-600 font-medium">{edu.company}</div>
+                                    </div>
+                                    <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">{edu.date}</span>
+                                </div>
+                                <div className="text-sm text-slate-500 mb-4 flex items-center gap-2"><Globe size={14}/> {edu.location}</div>
+                                <ul className="space-y-2">
+                                    {edu.points.map((pt, i) => (
+                                        <li key={i} className="text-slate-600 text-sm flex gap-2">
+                                            <span className="text-green-500 mt-1.5">•</span> {pt}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+  
+            {/* EXPERIENCE */}
+            {activeSection === 'experience' && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                <h1 className="text-3xl font-bold text-slate-900 mb-6">Experience</h1>
+                <div className="space-y-4">
+                  {SYSTEM_DATA.experience.map((item) => (
+                    <div 
+                        key={item.id} 
+                        onClick={() => toggleExp(item.id)}
+                        className={`bg-white border border-slate-200 rounded-xl overflow-hidden transition-all cursor-pointer group ${expandedExp === item.id ? 'ring-2 ring-blue-500/20 shadow-md' : 'hover:shadow-sm'}`}
+                    >
+                        <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                                <div className={`w-12 h-12 rounded-lg ${item.color} bg-opacity-10 flex items-center justify-center text-2xl`}>
+                                    <Briefcase size={24} className={item.color.replace('bg-', 'text-')} />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-slate-900 text-lg">{item.role}</h4>
+                                    <div className="text-sm text-slate-500 font-medium">{item.company}</div>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
+                                <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{item.date}</span>
+                                <ChevronDown size={20} className={`text-slate-400 transition-transform duration-300 ${expandedExp === item.id ? 'rotate-180 text-blue-500' : ''}`} />
+                            </div>
+                        </div>
+                        
+                        <AnimatePresence>
+                            {expandedExp === item.id && (
+                                <motion.div 
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className="border-t border-slate-100 bg-slate-50/50"
+                                >
+                                    <div className="p-6 pt-4">
+                                        <h5 className="text-xs font-bold text-slate-400 uppercase mb-3">Key Achievements</h5>
+                                        <ul className="space-y-3">
+                                            {item.points.map((pt, i) => (
+                                                <li key={i} className="text-sm text-slate-700 flex items-start gap-3">
+                                                    <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0" />
+                                                    <span className="leading-relaxed">{pt}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+  
+            {/* PROJECTS */}
+            {activeSection === 'projects' && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                <h1 className="text-3xl font-bold text-slate-900 mb-6">Projects</h1>
+                <div className="grid grid-cols-1 gap-6">
+                    {SYSTEM_DATA.projects.map((proj, idx) => (
+                        <div 
+                            key={idx} 
+                            onClick={() => toggleProj(idx)}
+                            className={`bg-white border border-slate-200 rounded-xl p-6 transition-all cursor-pointer relative group ${expandedProj === idx ? 'ring-2 ring-purple-500/20 shadow-md' : 'hover:shadow-sm'}`}
+                        >
+                             <div className="flex justify-between items-start mb-4">
+                                 <div className="flex items-center gap-4">
+                                     <div className="text-4xl bg-slate-50 p-2 rounded-lg">{proj.icon}</div>
+                                     <div>
+                                         <h4 className="font-bold text-slate-900 text-lg">{proj.title}</h4>
+                                         <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md mt-1 inline-block">{proj.tech}</span>
+                                     </div>
+                                 </div>
+                                 <ChevronDown size={20} className={`text-slate-400 transition-transform duration-300 ${expandedProj === idx ? 'rotate-180 text-purple-500' : ''}`} />
+                             </div>
+                             
+                             <p className="text-slate-600 mb-4">{proj.desc}</p>
+                             
+                             <AnimatePresence>
+                                {expandedProj === idx && (
+                                    <motion.div 
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="pt-4 border-t border-slate-100"
+                                    >
+                                        <h5 className="text-xs font-bold text-slate-400 uppercase mb-3">Features & Tech</h5>
+                                        <ul className="space-y-2">
+                                            {proj.points.map((pt, i) => (
+                                                <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0"></span>
+                                                    <span className="leading-relaxed">{pt}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    ))}
+                </div>
+              </motion.div>
+            )}
+  
+            {/* SKILLS */}
+            {activeSection === 'skills' && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                <h1 className="text-3xl font-bold text-slate-900 mb-8">Technical Skills</h1>
+                <div className="grid gap-8">
+                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 className="text-sm font-bold text-blue-600 mb-4 uppercase flex items-center gap-2"><Code size={18}/> Languages</h4>
+                        <div className="flex flex-wrap gap-3">
+                            {SYSTEM_DATA.skills.languages.map(s => (
+                                <span key={s} className="px-4 py-2 bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:border-blue-300 transition-colors">{s}</span>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 className="text-sm font-bold text-purple-600 mb-4 uppercase flex items-center gap-2"><Cpu size={18}/> Frameworks</h4>
+                        <div className="flex flex-wrap gap-3">
+                            {SYSTEM_DATA.skills.frameworks.map(s => (
+                                <span key={s} className="px-4 py-2 bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:border-purple-300 transition-colors">{s}</span>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 className="text-sm font-bold text-orange-600 mb-4 uppercase flex items-center gap-2"><Terminal size={18}/> Tools</h4>
+                        <div className="flex flex-wrap gap-3">
+                            {SYSTEM_DATA.skills.tools.map(s => (
+                                <span key={s} className="px-4 py-2 bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:border-orange-300 transition-colors">{s}</span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+              </motion.div>
+            )}
+  
           </div>
-        </section>
+        </div>
+      </div>
+    );
+  };
+
+// --- GEMINI AI ASSISTANT APP ---
+const GeminiApp = () => {
+  const [messages, setMessages] = useState([
+    { role: 'assistant', text: 'Hi! I am the Gemini AI Assistant for AnuragOS. Ask me anything about Anurag’s skills, experience, or projects!' }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef(null);
+
+  // System Prompt for Gemini
+  const SYSTEM_PROMPT = `
+    You are an AI assistant for Anurag's portfolio website. 
+    Here is Anurag's data: ${JSON.stringify(SYSTEM_DATA)}.
+    Answer questions about Anurag in the first person (as if you are his digital representative) or third person.
+    Be professional, concise, and helpful.
+    If asked about contact info, provide his email: ${SYSTEM_DATA.profile.email}.
+    If asked about skills, list them from the data.
+    If asked something not in the data, say you don't have that info but they can contact Anurag directly.
+  `;
+
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
+    
+    const userMsg = input;
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setLoading(true);
+
+    try {
+      // Initialize Gemini
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      // Construct prompt history
+      const chat = model.startChat({
+        history: [
+          { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
+          { role: "model", parts: [{ text: "Understood. I will answer questions about Anurag based on this data." }] },
+          // Add previous 4 messages for context
+          ...messages.slice(-4).map(m => ({
+            role: m.role === 'user' ? 'user' : 'model',
+            parts: [{ text: m.text }]
+          }))
+        ],
+      });
+
+      const result = await chat.sendMessage(userMsg);
+      const response = result.response.text();
+
+      setMessages(prev => [...prev, { role: 'assistant', text: response }]);
+    } catch (error) {
+      console.error(error);
+      setMessages(prev => [...prev, { role: 'assistant', text: "Sorry, I encountered an error connecting to Gemini. Please try again later." }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
+
+  return (
+    <div className="h-full bg-[#0d0d0d] text-white flex flex-col">
+      {/* Header */}
+      <div className="p-4 border-b border-white/10 bg-[#1a1a1a] flex items-center gap-3">
+        <Sparkles className="text-blue-400" size={20} />
+        <div>
+          <h3 className="font-bold text-sm">Gemini Assistant</h3>
+          <div className="text-xs text-green-400 flex items-center gap-1">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> Online
+          </div>
+        </div>
+      </div>
+
+      {/* Chat Area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-[#2a2a2a] text-gray-200 rounded-tl-none'}`}>
+              {msg.text}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div className="flex justify-start">
+            <div className="bg-[#2a2a2a] p-3 rounded-2xl rounded-tl-none flex gap-1">
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></span>
+              <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-200"></span>
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef}></div>
+      </div>
+
+      {/* Input Area */}
+      <div className="p-4 bg-[#1a1a1a] border-t border-white/10">
+        <div className="flex gap-2">
+          <input 
+            type="text" 
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            placeholder="Ask about Anurag's experience..."
+            className="flex-1 bg-[#0d0d0d] border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white"
+          />
+          <button 
+            onClick={handleSend}
+            disabled={loading || !input.trim()}
+            className="p-2 bg-blue-600 rounded-full hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Send size={18} />
+          </button>
+        </div>
+        <div className="text-[10px] text-gray-500 text-center mt-2 flex items-center justify-center gap-1">
+          Powered by <Sparkles size={8} /> Gemini Pro
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // --- CALENDAR & MEETING SCHEDULER APP ---
 const CalendarApp = () => {
@@ -282,7 +651,6 @@ const CalendarApp = () => {
             <Calendar className="text-red-500" /> Schedule a Meeting
         </h2>
         
-        {/* Simple Custom Calendar Mockup */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="flex justify-between mb-4 font-bold text-lg">
                 <span>{date.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
@@ -594,8 +962,10 @@ const MailApp = () => {
 // --- MAIN OS APP ---
 
 const App = () => {
-  const [openApps, setOpenApps] = useState([]);
+  const [openApps, setOpenApps] = useState([]); // Empty array: no apps open by default
+  const [minimizedApps, setMinimizedApps] = useState([]);
   const [activeAppId, setActiveAppId] = useState(null);
+  const [isAnyAppMaximized, setIsAnyAppMaximized] = useState(false); 
 
   // Apps Configuration
   const APPS = [
@@ -604,6 +974,7 @@ const App = () => {
     { id: 'projects', title: 'Projects', icon: <FolderOpen className="text-white" />, color: 'bg-orange-500', content: <ProjectsApp /> },
     { id: 'terminal', title: 'Terminal', icon: <Terminal className="text-white" />, color: 'bg-gray-800', content: <TerminalApp /> },
     { id: 'calendar', title: 'Meeting', icon: <Calendar className="text-white" />, color: 'bg-red-500', content: <CalendarApp /> },
+    { id: 'gemini', title: 'Assistant', icon: <Sparkles className="text-white" />, color: 'bg-purple-600', content: <GeminiApp /> },
     
     // Action/Interactive Apps
     { id: 'mail', title: 'Mail', icon: <Mail className="text-white" />, color: 'bg-blue-400', content: <MailApp /> },
@@ -622,6 +993,12 @@ const App = () => {
     }
 
     // Handle Window Apps
+    if (minimizedApps.includes(app.id)) {
+      setMinimizedApps(minimizedApps.filter(id => id !== app.id));
+      setActiveAppId(app.id);
+      return;
+    }
+
     if (!openApps.includes(app.id)) {
       setOpenApps([...openApps, app.id]);
     }
@@ -630,8 +1007,18 @@ const App = () => {
 
   const closeApp = (appId) => {
     setOpenApps(openApps.filter(id => id !== appId));
-    if (activeAppId === appId) setActiveAppId(null);
+    setMinimizedApps(minimizedApps.filter(id => id !== appId));
+    if (activeAppId === appId) {
+        setActiveAppId(null);
+        setIsAnyAppMaximized(false); // Reset maximize state if active app closes
+    }
   };
+
+  const minimizeApp = (appId) => {
+      setMinimizedApps([...minimizedApps, appId]);
+      setActiveAppId(null);
+      setIsAnyAppMaximized(false); // Minimized apps aren't full screen
+  }
 
   return (
     <div className="h-[100dvh] w-screen bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center overflow-hidden font-sans selection:bg-blue-500/30 relative">
@@ -643,7 +1030,7 @@ const App = () => {
 
       {/* DESKTOP / MOBILE APP GRID */}
       <div className="pt-20 px-4 md:px-6 grid grid-cols-4 md:flex md:flex-col gap-x-4 gap-y-8 md:gap-6 w-full md:w-fit mx-auto md:mx-0 place-items-center md:place-items-start">
-        {APPS.filter(app => !['mail', 'phone', 'linkedin', 'github'].includes(app.id)).map(app => (
+        {APPS.filter(app => !['mail', 'phone', 'linkedin', 'github', 'gemini'].includes(app.id)).map(app => (
           <div 
             key={app.id} 
             onClick={() => handleAppClick(app)}
@@ -661,6 +1048,8 @@ const App = () => {
       <AnimatePresence>
         {openApps.map(appId => {
           const app = APPS.find(a => a.id === appId);
+          if (!app || minimizedApps.includes(appId)) return null;
+          
           return (
             <Window 
               key={appId} 
@@ -668,75 +1057,88 @@ const App = () => {
               isFocused={activeAppId === appId}
               onFocus={() => setActiveAppId(appId)}
               onClose={() => closeApp(appId)}
+              onMinimize={() => minimizeApp(appId)}
+              onMaximizeToggle={(isMax) => setIsAnyAppMaximized(isMax)}
             />
           );
         })}
       </AnimatePresence>
 
-      {/* MOBILE BOTTOM DOCK (iOS Style) */}
-      <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
-        <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 flex justify-between items-center shadow-2xl">
-          {/* Phone */}
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-             <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
-               <Phone size={24} className="text-white" fill="currentColor" />
-             </div>
-          </div>
-          {/* Mail */}
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-             <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center shadow-lg">
-               <Mail size={24} className="text-white" />
-             </div>
-          </div>
-           {/* Calendar (Meeting) */}
-           <div onClick={() => handleAppClick(APPS.find(a => a.id === 'calendar'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-             <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center shadow-lg">
-               <Calendar size={24} className="text-white" />
-             </div>
-          </div>
-          {/* LinkedIn */}
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'linkedin'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-             <div className="w-12 h-12 rounded-full bg-[#0077b5] flex items-center justify-center shadow-lg">
-               <Linkedin size={24} className="text-white" fill="currentColor" />
-             </div>
-          </div>
-          {/* Github */}
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'github'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-             <div className="w-12 h-12 rounded-full bg-[#24292e] flex items-center justify-center shadow-lg">
-               <Github size={24} className="text-white" />
-             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* DESKTOP DOCK (Mac Style) - Hidden on Mobile */}
-      <div className="hidden md:block fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="flex items-end gap-3 px-4 py-3 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl">
-          {APPS.filter(a => !['mail', 'phone', 'calendar'].includes(a.id)).map(app => (
-            <div key={app.id} className="relative group">
-               <button 
-                onClick={() => handleAppClick(app)}
-                className={`p-3 rounded-xl transition-all duration-300 ease-out hover:-translate-y-2 ${activeAppId === app.id ? 'bg-white/20 ring-1 ring-white/30' : 'hover:bg-white/10'}`}
-              >
-                {React.cloneElement(app.icon, { size: 24 })}
-              </button>
-              {openApps.includes(app.id) && (
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
-              )}
+      {/* MOBILE BOTTOM DOCK (iOS Style) - Hides if maximized */}
+      {!isAnyAppMaximized && (
+          <div className="md:hidden fixed bottom-4 left-4 right-4 z-50 transition-all duration-300">
+            <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 flex justify-between items-center shadow-2xl">
+              {/* Phone */}
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+                 <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
+                   <Phone size={24} className="text-white" fill="currentColor" />
+                 </div>
+              </div>
+              {/* Mail */}
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+                 <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center shadow-lg">
+                   <Mail size={24} className="text-white" />
+                 </div>
+              </div>
+               {/* Gemini (Assistant) */}
+               <div onClick={() => handleAppClick(APPS.find(a => a.id === 'gemini'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+                 <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg">
+                   <Sparkles size={24} className="text-white" />
+                 </div>
+              </div>
+              {/* LinkedIn */}
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'linkedin'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+                 <div className="w-12 h-12 rounded-full bg-[#0077b5] flex items-center justify-center shadow-lg">
+                   <Linkedin size={24} className="text-white" fill="currentColor" />
+                 </div>
+              </div>
+              {/* Github */}
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'github'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+                 <div className="w-12 h-12 rounded-full bg-[#24292e] flex items-center justify-center shadow-lg">
+                   <Github size={24} className="text-white" />
+                 </div>
+              </div>
             </div>
-          ))}
-          <div className="w-px h-8 bg-white/10 mx-1"></div>
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'calendar'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer">
-            <Calendar size={24} className="text-red-500" />
           </div>
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer">
-            <Mail size={24} className="text-blue-400" />
+      )}
+
+      {/* DESKTOP DOCK (Mac Style) - Hides if maximized */}
+      {!isAnyAppMaximized && (
+          <div className="hidden md:block fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300">
+            <div className="flex items-end gap-3 px-4 py-3 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl">
+              {APPS.filter(a => !['mail', 'phone', 'calendar', 'gemini'].includes(a.id)).map(app => (
+                <div key={app.id} className="relative group">
+                   <button 
+                    onClick={() => handleAppClick(app)}
+                    className={`p-3 rounded-xl transition-all duration-300 ease-out hover:-translate-y-2 ${activeAppId === app.id && !minimizedApps.includes(app.id) ? 'bg-white/20 ring-1 ring-white/30' : 'hover:bg-white/10'}`}
+                  >
+                    {React.cloneElement(app.icon, { size: 24 })}
+                  </button>
+                  {(openApps.includes(app.id) || minimizedApps.includes(app.id)) && (
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+                  )}
+                </div>
+              ))}
+              <div className="w-px h-8 bg-white/10 mx-1"></div>
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'gemini'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+                 <Sparkles size={24} className="text-purple-400" />
+                 {(openApps.includes('gemini') || minimizedApps.includes('gemini')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+              </div>
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'calendar'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+                <Calendar size={24} className="text-red-500" />
+                {(openApps.includes('calendar') || minimizedApps.includes('calendar')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+              </div>
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+                <Mail size={24} className="text-blue-400" />
+                 {(openApps.includes('mail') || minimizedApps.includes('mail')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+              </div>
+              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+                 <Phone size={24} className="text-green-400" />
+                 {(openApps.includes('phone') || minimizedApps.includes('phone')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+              </div>
+            </div>
           </div>
-          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer">
-             <Phone size={24} className="text-green-400" />
-          </div>
-        </div>
-      </div>
+      )}
 
     </div>
   );
