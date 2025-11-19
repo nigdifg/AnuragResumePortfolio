@@ -15,7 +15,5 @@ export default {
       }
     },
   },
-  plugins: [
-    require("tailwindcss-animate"), // Required for the smooth fade-in animations
-  ],
+  plugins: [],
 }
