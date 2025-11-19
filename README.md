@@ -40,7 +40,9 @@ npm run build
 
 ## 📦 Deployment
 
-**See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive deployment instructions.**
+**🚀 New to deployment? Start here: [QUICKSTART.md](./QUICKSTART.md)**
+
+**For detailed instructions, see: [DEPLOYMENT.md](./DEPLOYMENT.md)**
 
 ### Quick Deploy Options:
 
