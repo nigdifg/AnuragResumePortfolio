@@ -4,7 +4,7 @@ import {
   Terminal, User, Briefcase, FolderOpen, Mail, X, Minus, 
   Maximize2, Github, Linkedin, Globe, Cpu, Code, 
   ChevronRight, Wifi, Battery, Search, Command, LayoutGrid,
-  ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle, ChevronDown, Minimize2, Sparkles, MessageSquare, GraduationCap, BookOpen, Download, Menu
+  ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle, ChevronDown, Minimize2, Sparkles, MessageSquare, GraduationCap, BookOpen, Download, Menu, Trophy, Award, Star, ShieldCheck
 } from 'lucide-react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -21,54 +21,103 @@ const SYSTEM_DATA = {
     phone: "+918707883130",
     location: "New Delhi, India",
     about: "Backend specialist transforming legacy systems into scalable microservices. Expert in Java Spring Boot, Azure Cloud, and Data Structures.",
+    fullBio: "Dedicated System Engineer and Backend Developer with a focus on building robust, scalable microservices using Java Spring Boot and Azure Data Factory (ADF). Proven ability to enhance system efficiency and reliability by migrating legacy ETL jobs and designing high-performance RESTful APIs. My expertise includes optimizing database performance, where I boosted application responsiveness by 40% for real-time analytics through the integration of Redis lookup and Azure Cosmos DB. I excel at cross-functional collaboration, SQL query optimization, and data modeling. Additionally, I maintain a strong coding foundation as a Knight on LeetCode (1880+ contest rating), with 500+ questions solved, and I am adept in full-stack technologies like React.js and MongoDB for rapid prototyping and solution delivery. I am passionate about leveraging technical skills to drive innovation and measurable outcomes.",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anurag&backgroundColor=b6e3f4&clothing=blazerAndShirt",
     social: {
       linkedin: "https://www.linkedin.com/in/anurag-91a137203/",
-      github: "https://github.com/nigdifg" 
-    }
+      github: "https://github.com/anurag" 
+    },
+    topSkills: ["Java", "Spring Boot", "React.js", "JavaScript", "Azure ADF", "RESTful APIs", "Microservices", "SQL", "Redis"]
   },
   experience: [
     {
       id: 1,
       company: "Tata Consultancy Services",
-      role: "System Engineer - Backend",
-      date: "Sept 2024 - Present",
-      location: "New Delhi",
+      role: "System Engineer",
+      date: "Sep 2024 - Present",
+      duration: "1 yr 3 mos",
+      location: "New Delhi, Delhi, India · On-site",
       type: "Full-time",
       points: [
-        "Migrated legacy Talend ETL jobs to scalable microservices using ADF and Java Spring Boot, ensuring high performance and reliability.",
-        "Designed RESTful APIs and AOP for logging and exception handling, reducing code duplication by 25%.",
-        "Monitored and debugged Spring Boot applications with Azure AppInsights, Log Analytics, and Kubernetes dashboards, reducing incident resolution time by 20%.",
-        "Integrated Redis lookup and Azure Cosmos DB (SQL API) to manage large datasets operations within backend services boosting application and responsiveness by 40% for real-time analytics.",
-        "Collaborated with cross-functional teams to gather requirements and deliver backend solutions; performed SQL query optimization and data modeling.",
-        "Built and optimized 10+ ADF pipelines, enabling reusable components, efficient data extraction, transformation, resolving critical production failures and loading across systems."
+        "Backend & Microservices Development: Developed scalable microservices optimizing scalable backend systems using Java & Spring Boot, following clean code and design patterns, and migrated legacy Talend ETL jobs to microservices, improving maintainability, performance, and integration.",
+        "Designed & implemented RESTful APIs with Spring MVC/Spring Boot annotations and proper dependency injection, while extending services with complex lookups (joins, matches, conditionals) to meet business requirements.",
+        "Optimized performance by integrating (in-memory DB) Redis for large datasets, enabling real-time analytics and efficient session management.",
+        "Applied AOP in java for logging, exception handling, and cross-cutting concerns, reducing code duplication and improving modularity.",
+        "Worked with Azure Cosmos DB (SQL API) for storing/querying structured & semi-structured data, improving access with indexed containers.",
+        "Contributed to code restructuring, on-demand changes, and feature completeness before UAT/production, with monitoring & debugging via Azure AppInsights, Log Analytics, and Kubernetes Dashboard.",
+        "Azure Data Factory (ADF) / ETL: Engineered and maintained robust ETL pipelines using Azure Data Factory (ADF), ensuring seamless and reliable data flow across systems.",
+        "Demonstrated strong problem-solving skills by leading ADF development and troubleshooting efforts, successfully resolving more than 15 critical production and staging issues.",
+        "Integrated ADF pipelines with backend services and downstream systems, promoting a clean separation of concerns and encouraging the use of reusable pipeline templates.",
+        "Proficient in log debugging and production monitoring with tools like Azure AppInsights and Kubernetes Dashboard to ensure application health and reliability."
       ],
-      color: "bg-blue-500"
+      skills: ["Azure Data Factory", "Spring Boot", "Microservices", "SQL", "MySQL", "Redis", "Data Structures", "Java", "Systems Engineering", "CI/CD"],
+      color: "bg-blue-600"
     },
     {
       id: 2,
-      company: "Logitok",
+      company: "Logitok Private Limited",
       role: "Full Stack Developer",
-      date: "June 2024 - Aug 2024",
-      location: "Chennai",
+      date: "Jul 2024 - Sep 2024",
+      duration: "3 mos",
+      location: "Remote",
       type: "Internship",
       points: [
-        "Created dynamic dashboards, charts, graphs, Map and an admin portal.",
-        "Implemented routing using React with params, useNavigation, and routes; managed backend with MongoDB and client-side data with IndexedDB."
+        "Implemented client-side routing with react-router-dom to create seamless single-page applications with custom URL handling.",
+        "Integrated dynamic data visualization components, including interactive charts, graphs, and maps, to provide users with actionable insights.",
+        "Optimized API management and refined data fetching strategies to enhance application performance and responsiveness.",
+        "Designed and developed a responsive user interface using the Ant Design framework to ensure an optimal user experience across various devices.",
+        "Architected and implemented robust authentication and security protocols to ensure secure access and efficient user management."
       ],
-      color: "bg-purple-500"
+      skills: ["Node.js", "TypeScript", "Front-End Development", "React.js", "REST APIs", "Full-Stack Development", "Engineering", "Algorithms"],
+      color: "bg-purple-600"
     },
     {
       id: 3,
-      company: "Carikture",
-      role: "Web Developer",
-      date: "Apr 2022 - June 2022",
-      location: "Ghaziabad",
+      company: "Celebal Technologies",
+      role: "Intern Data Engineering",
+      date: "May 2023 - Jul 2023",
+      duration: "3 mos",
+      location: "Remote",
       type: "Internship",
       points: [
-        "Orchestrated hands-on experience in JavaScript, Tailwind CSS, and other web technologies including DOM manipulation and javascript object model.",
-        "Developed a web application utilizing canvas and front-end structures, enhancing user interactivity and responsiveness."
+        "Gained hands-on experience in Data Engineering concepts and tools.",
+        "Worked on data processing and transformation tasks.",
+         "Collaborated with the team to understand data requirements."
       ],
+      skills: ["Data Engineering", "SQL", "Python"],
+      color: "bg-indigo-500"
+    },
+    {
+        id: 4,
+        company: "UNIcompiler",
+        role: "Web Developer",
+        date: "Jul 2022 - Aug 2022",
+        duration: "2 mos",
+        location: "Virtual Internship",
+        type: "Internship",
+        points: [
+            "Constructed interactive and responsive front-end projects using React, gaining hands-on experience in building interactive and responsive user interfaces.",
+            "Developed a portfolio website, quiz application, and other projects using React.",
+            "Implemented various APIs, including OpenWeather and Cowin API, to fetch and display dynamic data in the applications."
+        ],
+        skills: ["JavaScript", "Node.js", "HTML", "Front-End Development", "React.js", "CSS", "Bootstrap"],
+        color: "bg-teal-500"
+    },
+    {
+      id: 5,
+      company: "CariKture",
+      role: "Web Development Intern",
+      date: "Apr 2022 - Jun 2022",
+      duration: "3 mos",
+      location: "Ghaziabad, Uttar Pradesh, India",
+      type: "Internship",
+      points: [
+        "Orchestrated hands-on experience in JavaScript, Tailwind CSS, SVG, and other web technologies during web development internship at CariKture.",
+        "Engineered a web application related to whiteboard, canvas, and frontend website structure.",
+        "Implemented functionality using JavaScript to ensure seamless interactivity and user experience.",
+        "Demonstrated proficiency in creating responsive and visually appealing designs using Tailwind CSS."
+      ],
+      skills: ["JavaScript", "CSS", "HTML", "Responsive Web Design", "Front-End Development", "React.js", "Front-End Design"],
       color: "bg-orange-500"
     }
   ],
@@ -87,35 +136,137 @@ const SYSTEM_DATA = {
         color: "bg-green-500"
     }
   ],
+  certifications: [
+      {
+          name: "MySQL Developer Course",
+          issuer: "Udemy",
+          date: "Dec 2024",
+          id: "UC-25a36691-49ef-4a32-bda6-b02b25151da5",
+          skills: ["MySQL"]
+      },
+      {
+          name: "Data Structures & Algorithms",
+          issuer: "Coding Ninjas",
+          date: "Oct 2022",
+          id: null,
+          skills: ["Programming", "CP"]
+      },
+      {
+          name: "Fintech Engineering Virtual Experience",
+          issuer: "Goldman Sachs",
+          date: "Oct 2022",
+          id: null,
+          skills: []
+      },
+      {
+          name: "Problem Solving (Basic)",
+          issuer: "HackerRank",
+          date: "Sep 2022",
+          id: "6B801134ADB5",
+          skills: []
+      },
+      {
+          name: "Problem Solving (Intermediate)",
+          issuer: "HackerRank",
+          date: "Sep 2022",
+          id: "66508b25d2f3",
+          skills: []
+      },
+      {
+          name: "CSS and JAVASCRIPT",
+          issuer: "Udemy",
+          date: "Jan 2022",
+          id: "UC-71010daa-0ee0-4966-a71e-8cff8ebad903",
+          skills: ["CSS Flexbox"]
+      },
+      {
+          name: "Data Analytics & Predictive Tech",
+          issuer: "IIT (BHU), Varanasi",
+          date: "Jul 2021",
+          id: null,
+          skills: []
+      },
+      {
+          name: "Front-End Web UI Frameworks",
+          issuer: "Coursera",
+          date: "Mar 2021",
+          id: null,
+          skills: ["CSS Flexbox"]
+      }
+  ],
   projects: [
     {
-      title: "Brain Busters",
-      icon: "🧠",
-      desc: "Interactive puzzle app assessing critical thinking.",
-      tech: "React.js, Redux, Firebase, Material UI",
+      title: "Event Vibes",
+      icon: "🎉",
+      desc: "A dynamic blogging platform for creative expression.",
+      date: "Jan 2024 - Present",
+      tech: "React.js, Tailwind CSS, JavaScript, Appwrite",
       points: [
-          "Designed an interactive Puzzle assessing the user's decision-making and critical thinking abilities and Activity Dashboard to display performance metrics.",
-          "Tracked time for clues and accuracy and Admin Panel for user performance."
+        "Designed for creative expression and community building.",
+        "Features a supportive community hub and real-time feedback.",
+        "Built with Appwrite for backend services."
       ],
       status: "Live"
     },
     {
-      title: "My-Diary",
+      title: "MakeMyTrip Automation",
+      icon: "🚆",
+      desc: "Automated train booking process script.",
+      date: "Jan 2024 - Feb 2024",
+      tech: "Selenium, Java, Eclipse IDE",
+      points: [
+        "Automated train booking on MakeMyTrip using Selenium.",
+        "Streamlined booking by systematically navigating the website.",
+        "Leveraged Java in Eclipse IDE for robust execution."
+      ],
+      status: "Demo"
+    },
+    {
+      title: "Brain Busters",
+      icon: "🧠",
+      desc: "Interactive puzzle app assessing critical thinking.",
+      date: "Apr 2023",
+      tech: "React.js, Firebase, JavaScript, Tailwind CSS",
+      points: [
+          "Interactive game to assess soft skills.",
+          "Utilized React.js for frontend and Firebase for database.",
+          "Includes Activity Dashboard for performance metrics."
+      ],
+      status: "GitHub"
+    },
+    {
+      title: "My Diary",
       icon: "📔",
       desc: "A MERN Full-Stack Poetry Blogging Application.",
-      tech: "React.js, Javascript, MongoDB",
+      date: "Mar 2023 - Apr 2023",
+      tech: "React.js, MongoDB, Node.js, Express.js",
       points: [
-          "Enabled users to post and read poetry, as well as leave comments.",
-          "Provided users with the ability to authorization (JSON Web token), create, edit, and delete their own poetry, and comment on others' poetry."
+          "MERN stack app for sharing and exploring poetry.",
+          "Post, read, and comment functionality.",
+          "Secure JWT authorization."
       ],
       status: "GitHub"
     }
   ],
   skills: {
-    languages: ["C/C++", "Java", "SQL", "Javascript"],
-    frameworks: ["Spring Boot", "React.js"],
-    tools: ["Azure Data Factory", "Linux", "Python", "GitHub", "Node.js", "Talend studio"]
-  }
+    languages: ["C/C++", "Java", "SQL", "Javascript", "HTML", "CSS"],
+    frameworks: ["Spring Boot", "React.js", "Node.js", "Bootstrap", "Tailwind CSS", "Selenium"],
+    tools: ["Azure Data Factory", "Linux", "Python", "GitHub", "Talend studio", "Redis", "Azure Cosmos DB", "Docker", "Appwrite", "Eclipse IDE"]
+  },
+  achievements: [
+      {
+          title: "LeetCode Knight",
+          desc: "Rating: 1886 | Solved 500+ Questions",
+          icon: <Trophy size={20} className="text-yellow-500" />,
+          link: "https://leetcode.com/anurag"
+      },
+      {
+          title: "Coding Ninja Expert",
+          desc: "Level 7 | Qualified Codekaze Round 2",
+          icon: <Award size={20} className="text-orange-500" />,
+          link: "#"
+      }
+  ]
 };
 
 // --- COMPONENTS ---
@@ -131,16 +282,15 @@ const TopBar = () => {
   return (
     <div className="h-8 md:h-8 bg-black/20 backdrop-blur-xl border-b border-white/5 text-white flex items-center justify-between px-4 md:px-4 text-xs select-none fixed top-0 w-full z-50 shadow-sm">
       <div className="hidden md:flex items-center gap-4">
-        <span className="font-bold text-blue-400">Anurag's OS</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">Programmer</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">Developer</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">Learner</span>
+        <span className="font-bold text-blue-400"> AnuragOS</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">File</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Edit</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">View</span>
       </div>
 
-      <div className="md:hidden flex w-full items-center justify-between relative">
-         <span className="font-semibold opacity-0">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-         <span className="absolute left-1/2 transform -translate-x-1/2 font-bold text-blue-400 text-sm tracking-wide">Anurag's OS</span>
-         <div className="flex items-center gap-1 opacity-80">
+      <div className="md:hidden flex w-full items-center justify-center relative">
+         <span className="font-bold text-blue-400 text-sm tracking-wide">Anurag's OS</span>
+         <div className="flex items-center gap-1 opacity-80 absolute right-0">
             <Signal size={14} />
             <Wifi size={14} />
             <Battery size={14} />
@@ -209,13 +359,6 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
         onDoubleClick={!isMobile ? toggleMaximize : undefined}
       >
         
-        {/* Mobile Back Button - Increased Margin Top */}
-        {isMobile && (
-          <button onClick={onClose} className="p-2 -ml-2 text-blue-600 flex items-center gap-1 active:bg-slate-200 rounded-lg transition-colors mt-8"> 
-            <ArrowLeft size={24} /> <span className="text-lg font-medium">Back</span>
-          </button>
-        )}
-
         {/* Desktop Controls */}
         {!isMobile && (
           <div className="flex items-center gap-2 group">
@@ -231,7 +374,7 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
           </div>
         )}
 
-        {/* Window Title - Hidden on Mobile for cleaner look, or adjust spacing if needed */}
+        {/* Window Title */}
         {!isMobile && (
           <div className="text-sm font-medium text-gray-400 flex items-center gap-2 select-none">
              {app.icon} {app.title}
@@ -245,6 +388,15 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
       <div className={`flex-1 overflow-y-auto custom-scrollbar p-0 relative ${isMobile ? 'bg-slate-50' : 'bg-[#0f0f0f]'}`}>
         {app.content}
       </div>
+      
+      {/* Mobile Bottom Bar with Back Button */}
+      {isMobile && (
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 border-t border-slate-200 flex items-center z-50 pb-6">
+          <button onClick={onClose} className="p-3 bg-slate-100 rounded-full text-slate-800 shadow-sm active:scale-95 transition-transform flex items-center justify-center">
+             <ArrowLeft size={24} />
+          </button>
+        </div>
+      )}
     </motion.div>
   );
 };
@@ -322,8 +474,10 @@ const ResumeApp = () => {
             <MenuButton id="profile" label="Profile Overview" icon={User} />
             <MenuButton id="education" label="Education" icon={GraduationCap} />
             <MenuButton id="experience" label="Experience" icon={Briefcase} />
+            <MenuButton id="certifications" label="Certifications" icon={BookOpen} />
             <MenuButton id="projects" label="Projects" icon={FolderOpen} />
             <MenuButton id="skills" label="Skills" icon={Cpu} />
+            <MenuButton id="achievements" label="Achievements" icon={Trophy} />
           </div>
   
           <div className="pt-4 border-t border-slate-100 md:border-white/10 mt-auto">
@@ -342,8 +496,11 @@ const ResumeApp = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Profile Overview</h1>
                 <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
-                   <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-6">{SYSTEM_DATA.profile.about}</p>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-8 whitespace-pre-line border-b border-slate-100 pb-6">
+                       {SYSTEM_DATA.profile.fullBio}
+                   </p>
+
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                       <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg border border-slate-100">
                         <Mail className="text-blue-500" size={20} />
                         <div className="overflow-hidden">
@@ -365,6 +522,20 @@ const ResumeApp = () => {
                           <div className="text-sm font-medium">{SYSTEM_DATA.profile.location}</div>
                         </div>
                       </div>
+                   </div>
+
+                   {/* Top Skills Section */}
+                   <div>
+                       <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                           <Star size={16} className="text-yellow-500" /> Top Skills
+                       </h3>
+                       <div className="flex flex-wrap gap-2">
+                           {SYSTEM_DATA.profile.topSkills.map(skill => (
+                               <span key={skill} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-bold rounded-full border border-blue-100">
+                                   {skill}
+                               </span>
+                           ))}
+                       </div>
                    </div>
                 </div>
               </motion.div>
@@ -399,59 +570,104 @@ const ResumeApp = () => {
                 </motion.div>
             )}
   
-            {/* EXPERIENCE */}
+            {/* EXPERIENCE (Timeline Style) */}
             {activeSection === 'experience' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Experience</h1>
-                <div className="space-y-4">
+                <div className="space-y-8 relative pl-8 border-l-2 border-slate-200 ml-3">
                   {SYSTEM_DATA.experience.map((item) => (
-                    <div 
-                        key={item.id} 
-                        onClick={() => toggleExp(item.id)}
-                        className={`bg-white border border-slate-200 rounded-xl overflow-hidden transition-all cursor-pointer group ${expandedExp === item.id ? 'ring-2 ring-blue-500/20 shadow-md' : 'hover:shadow-sm'}`}
-                    >
-                        <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-lg ${item.color} bg-opacity-10 flex items-center justify-center text-2xl shrink-0`}>
-                                    <Briefcase size={24} className={item.color.replace('bg-', 'text-')} />
+                    <div key={item.id} className="relative group">
+                        {/* Timeline Dot */}
+                        <div className={`absolute -left-[41px] top-0 w-5 h-5 rounded-full border-4 border-white ${item.color} shadow-md group-hover:scale-125 transition-transform z-10`}></div>
+
+                        <div 
+                            onClick={() => toggleExp(item.id)}
+                            className={`bg-white border border-slate-200 rounded-xl overflow-hidden transition-all cursor-pointer hover:shadow-md`}
+                        >
+                            <div className="p-5">
+                                <div className="flex flex-col md:flex-row justify-between items-start mb-2">
+                                    <div>
+                                        <h4 className="font-bold text-slate-900 text-lg">{item.role}</h4>
+                                        <div className="text-sm text-slate-600 font-medium flex items-center gap-2">
+                                            {item.company} 
+                                            <span className="w-1 h-1 bg-slate-400 rounded-full"></span> 
+                                            {item.type}
+                                        </div>
+                                    </div>
+                                    <div className="text-right mt-2 md:mt-0">
+                                         <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full block w-fit ml-auto mb-1">{item.date}</span>
+                                         <span className="text-xs text-slate-400 block">{item.duration}</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900 text-lg">{item.role}</h4>
-                                    <div className="text-sm text-slate-500 font-medium">{item.company}</div>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto mt-2 md:mt-0">
-                                <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full whitespace-nowrap">{item.date}</span>
-                                <ChevronDown size={20} className={`text-slate-400 transition-transform duration-300 ${expandedExp === item.id ? 'rotate-180 text-blue-500' : ''}`} />
+                                <div className="text-xs text-slate-500 mb-4 flex items-center gap-2"><Globe size={12}/> {item.location}</div>
+
+                                <AnimatePresence>
+                                    {expandedExp === item.id && (
+                                        <motion.div 
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="border-t border-slate-100 pt-4 mt-2"
+                                        >
+                                            <ul className="space-y-3 mb-4">
+                                                {item.points.map((pt, i) => (
+                                                    <li key={i} className="text-sm text-slate-700 flex items-start gap-3">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0"></span>
+                                                        <span className="leading-relaxed">{pt}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            {item.skills && (
+                                                <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-50">
+                                                    {item.skills.map((skill, i) => (
+                                                        <span key={i} className="px-2 py-1 bg-slate-50 text-slate-600 text-xs font-medium rounded border border-slate-200">{skill}</span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                                
+                                {!expandedExp && <div className="text-xs text-blue-500 font-medium mt-2 flex items-center gap-1">Show Details <ChevronDown size={14}/></div>}
+                                {expandedExp === item.id && <div className="text-xs text-slate-400 font-medium mt-4 flex items-center gap-1">Show Less <ChevronDown size={14} className="rotate-180"/></div>}
                             </div>
                         </div>
-                        
-                        <AnimatePresence>
-                            {expandedExp === item.id && (
-                                <motion.div 
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    className="border-t border-slate-100 bg-slate-50/50"
-                                >
-                                    <div className="p-6 pt-4">
-                                        <h5 className="text-xs font-bold text-slate-400 uppercase mb-3">Key Achievements</h5>
-                                        <ul className="space-y-3">
-                                            {item.points.map((pt, i) => (
-                                                <li key={i} className="text-sm text-slate-700 flex items-start gap-3">
-                                                    <CheckCircle size={16} className="text-green-500 mt-0.5 shrink-0" />
-                                                    <span className="leading-relaxed">{pt}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </div>
                   ))}
                 </div>
               </motion.div>
+            )}
+
+             {/* CERTIFICATIONS */}
+             {activeSection === 'certifications' && (
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Licenses & Certifications</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {SYSTEM_DATA.certifications.map((cert, idx) => (
+                            <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col gap-3 hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-start">
+                                    <h3 className="font-bold text-slate-900 text-lg leading-tight">{cert.name}</h3>
+                                    <ShieldCheck className="text-green-500 shrink-0" size={20} />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-slate-700">{cert.issuer}</p>
+                                    <p className="text-xs text-slate-500">Issued {cert.date}</p>
+                                </div>
+                                {cert.id && <p className="text-xs font-mono text-slate-400">ID: {cert.id}</p>}
+                                {cert.skills.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {cert.skills.map(skill => (
+                                            <span key={skill} className="px-2 py-0.5 bg-slate-50 text-slate-600 text-[10px] font-bold uppercase tracking-wider rounded border border-slate-200">{skill}</span>
+                                        ))}
+                                    </div>
+                                )}
+                                <button className="mt-auto pt-4 text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1 w-fit">
+                                    Show credential <ChevronRight size={14} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
             )}
   
             {/* PROJECTS */}
@@ -533,6 +749,26 @@ const ResumeApp = () => {
                             ))}
                         </div>
                     </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ACHIEVEMENTS */}
+            {activeSection === 'achievements' && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Achievements & Profiles</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {SYSTEM_DATA.achievements.map((ach, idx) => (
+                        <a href={ach.link} target="_blank" key={idx} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex items-center gap-4 group">
+                            <div className="p-4 bg-yellow-50 rounded-full group-hover:scale-110 transition-transform">
+                                {ach.icon}
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{ach.title}</h3>
+                                <p className="text-sm text-slate-500">{ach.desc}</p>
+                            </div>
+                        </a>
+                    ))}
                 </div>
               </motion.div>
             )}
@@ -824,7 +1060,14 @@ const TerminalApp = () => {
       if (cmd === 'help') {
         newHistory.push({ type: 'output', content: 'Commands: about, skills, contact, clear' });
       } else if (cmd === 'about') {
-        newHistory.push({ type: 'output', content: SYSTEM_DATA.profile.about });
+        // Handle long text for terminal
+        const bioLines = SYSTEM_DATA.profile.about.match(/.{1,50}(\s|$)/g) || [SYSTEM_DATA.profile.about];
+        bioLines.forEach(line => {
+             newHistory.push({ type: 'output', content: line.trim() });
+        });
+      } else if (cmd === 'skills') {
+        newHistory.push({ type: 'output', content: 'LANGUAGES: ' + SYSTEM_DATA.skills.languages.join(', ') });
+        newHistory.push({ type: 'output', content: 'FRAMEWORKS: ' + SYSTEM_DATA.skills.frameworks.join(', ') });
       } else if (cmd === 'contact') {
         newHistory.push({ type: 'output', content: `Email: ${SYSTEM_DATA.profile.email}` });
       } else if (cmd === 'clear') {
@@ -845,7 +1088,7 @@ const TerminalApp = () => {
   return (
     <div className="p-4 font-mono text-sm md:text-sm h-full bg-[#0c0c0c] text-green-400 overflow-y-auto pb-20">
       {history.map((line, i) => (
-        <div key={i} className={`mb-2 break-words ${line.type === 'input' ? 'text-white' : line.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+        <div key={i} className={`mb-1 break-words ${line.type === 'input' ? 'text-white' : line.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
           {line.type === 'input' ? '> ' : ''}{line.content}
         </div>
       ))}
@@ -1058,7 +1301,8 @@ const App = () => {
       setIsAnyAppMaximized(false); // Minimized apps aren't full screen
   }
   
-  // Effect to check if resume app is open and maximized in mobile view to hide dock
+  // Effect to check if ANY app is open on mobile to hide dock.
+  // Previous logic was specific to 'resume' app, updated to all apps as requested.
   useEffect(() => {
       const isMobile = window.innerWidth < 768;
       if (isMobile && openApps.length > 0) {
