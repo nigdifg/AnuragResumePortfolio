@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Terminal, User, Briefcase, FolderOpen, Mail, X, Minus, Download,
+  Terminal, User, Briefcase, FolderOpen, Mail, X, Minus, 
   Maximize2, Github, Linkedin, Globe, Cpu, Code, 
   ChevronRight, Wifi, Battery, Search, Command, LayoutGrid,
-  ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle, ChevronDown, Minimize2, Sparkles, MessageSquare, GraduationCap, BookOpen
+  ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle, ChevronDown, Minimize2, Sparkles, MessageSquare, GraduationCap, BookOpen, Download, Menu
 } from 'lucide-react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -61,7 +61,7 @@ const SYSTEM_DATA = {
     {
       id: 3,
       company: "Carikture",
-      role: "Full Stack Developer",
+      role: "Web Developer",
       date: "Apr 2022 - June 2022",
       location: "Ghaziabad",
       type: "Internship",
@@ -164,7 +164,7 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
   };
 
   const windowVariants = {
-    initial: { scale: isMobile ? 0.8 : 0.9, opacity: 0, y: isMobile ? 100 : 20, borderRadius: "2rem" },
+    initial: { scale: isMobile ? 0.95 : 0.9, opacity: 0, y: isMobile ? 20 : 20, borderRadius: "2rem" },
     animate: (maximized) => ({ 
       scale: 1, 
       opacity: 1, 
@@ -175,7 +175,7 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
       top: maximized ? 0 : (isMobile ? 0 : 80),
       left: maximized ? 0 : (isMobile ? 0 : 80),
     }),
-    exit: { scale: isMobile ? 0.8 : 0.9, opacity: 0, y: isMobile ? 100 : 20, borderRadius: "2rem" }
+    exit: { scale: isMobile ? 0.95 : 0.9, opacity: 0, y: isMobile ? 20 : 20, borderRadius: "2rem" }
   };
 
   return (
@@ -191,17 +191,18 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
       onPointerDown={onFocus}
       className={`
         fixed md:absolute 
-        ${isMobile ? 'inset-0 z-50 bg-black' : 'bg-[#1c1c1c]/95 border border-white/10 shadow-2xl'}
+        ${isMobile ? 'inset-0 z-40 bg-white text-slate-900' : 'bg-[#1c1c1c]/95 border border-white/10 shadow-2xl'}
         backdrop-blur-xl overflow-hidden flex flex-col
         ${isFocused && !isMobile ? 'z-40 ring-1 ring-white/20' : ''}
         ${!isMobile && !isFocused ? 'z-10 opacity-90' : ''}
         ${isMaximized ? 'z-50 !m-0 !fixed' : ''}
       `}
     >
-      <div className={`h-12 md:h-10 flex items-center justify-between px-4 cursor-grab active:cursor-grabbing ${isMobile ? 'bg-[#121212] pt-safe-top' : 'bg-white/5 border-b border-white/5'}`} onDoubleClick={!isMobile ? toggleMaximize : undefined}>
+      {/* Title Bar */}
+      <div className={`h-12 md:h-10 flex items-center justify-between px-4 cursor-grab active:cursor-grabbing ${isMobile ? 'bg-slate-100 pt-safe-top border-b border-slate-200' : 'bg-white/5 border-b border-white/5'}`} onDoubleClick={!isMobile ? toggleMaximize : undefined}>
         {isMobile && (
-          <button onClick={onClose} className="p-2 -ml-2 text-blue-400 flex items-center gap-1">
-            <ArrowLeft size={20} /> <span className="text-base">Back</span>
+          <button onClick={onClose} className="p-2 -ml-2 text-blue-600 flex items-center gap-1">
+            <ArrowLeft size={20} /> <span className="text-base font-medium">Back</span>
           </button>
         )}
 
@@ -219,20 +220,20 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
           </div>
         )}
 
-        <div className="text-base md:text-sm font-medium text-gray-200 md:text-gray-400 flex items-center gap-2 select-none">
+        <div className={`text-base md:text-sm font-medium flex items-center gap-2 select-none ${isMobile ? 'text-slate-900' : 'text-gray-200 md:text-gray-400'}`}>
           {!isMobile && app.icon} {app.title}
         </div>
         
         <div className="w-10"></div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-0 bg-[#0f0f0f] relative">
+      <div className={`flex-1 overflow-y-auto custom-scrollbar p-0 relative ${isMobile ? 'bg-slate-50' : 'bg-[#0f0f0f]'}`}>
         {app.content}
       </div>
 
       {isMobile && (
         <div className="absolute bottom-0 left-0 w-full h-6 bg-transparent flex justify-center items-end pb-2 pointer-events-none">
-          <div className="w-32 h-1 bg-white/20 rounded-full"></div>
+          <div className="w-32 h-1 bg-black/20 rounded-full"></div>
         </div>
       )}
     </motion.div>
@@ -245,14 +246,22 @@ const ResumeApp = () => {
     const [activeSection, setActiveSection] = useState('profile');
     const [expandedExp, setExpandedExp] = useState(null);
     const [expandedProj, setExpandedProj] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const toggleExp = (id) => setExpandedExp(expandedExp === id ? null : id);
     const toggleProj = (idx) => setExpandedProj(expandedProj === idx ? null : idx);
 
     const MenuButton = ({ id, label, icon: Icon }) => (
       <button 
-        onClick={() => setActiveSection(id)}
-        className={`w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition-all ${activeSection === id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+        onClick={() => {
+            setActiveSection(id);
+            setIsMobileMenuOpen(false);
+        }}
+        className={`w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition-all 
+        ${activeSection === id 
+            ? 'bg-blue-600 text-white shadow-lg' 
+            : 'text-gray-500 md:text-gray-400 hover:bg-gray-100 md:hover:bg-white/5 hover:text-blue-600 md:hover:text-white'
+        }`}
       >
         <Icon size={18} />
         <span className="font-medium">{label}</span>
@@ -261,12 +270,31 @@ const ResumeApp = () => {
     );
 
     return (
-      <div className="flex flex-col md:flex-row h-full bg-white text-slate-800 overflow-hidden">
-        {/* Left Sidebar Navigation */}
-        <div className="w-full md:w-72 bg-[#181818] border-b md:border-r border-white/5 p-6 flex flex-col gap-6 md:h-full">
+      <div className="flex flex-col md:flex-row h-full bg-white text-slate-800 overflow-hidden relative">
+        
+        {/* Mobile Header / Menu Toggle */}
+        <div className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between z-20 sticky top-0 shadow-sm">
+            <div className="flex items-center gap-3">
+                <img src={SYSTEM_DATA.profile.avatar} className="w-10 h-10 rounded-full border border-slate-200" />
+                <div>
+                    <h3 className="font-bold text-slate-900 text-sm">{SYSTEM_DATA.profile.name}</h3>
+                    <p className="text-xs text-blue-600">{SYSTEM_DATA.profile.role}</p>
+                </div>
+            </div>
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 bg-slate-100 rounded-lg text-slate-600">
+                {isMobileMenuOpen ? <X size={20}/> : <Menu size={20}/>}
+            </button>
+        </div>
+
+        {/* Sidebar Navigation */}
+        <div className={`
+            md:w-72 bg-white md:bg-[#181818] border-r border-white/5 p-6 flex flex-col gap-6 md:h-full z-10
+            fixed md:static inset-0 top-[73px] md:top-0 transition-transform duration-300
+            ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}>
           
-          {/* Profile Summary Card */}
-          <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
+          {/* Desktop Profile Card */}
+          <div className="hidden md:block text-center p-4 bg-white/5 rounded-xl border border-white/10">
             <div className="relative inline-block">
               <img src={SYSTEM_DATA.profile.avatar} className="w-20 h-20 rounded-full border-2 border-blue-500 shadow-xl mb-3 mx-auto" />
               <span className="absolute bottom-3 right-0 w-5 h-5 bg-green-500 border-2 border-[#181818] rounded-full"></span>
@@ -281,7 +309,7 @@ const ResumeApp = () => {
           
           {/* Navigation Menu */}
           <div className="space-y-1 flex-1 overflow-y-auto">
-            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-4">Menu</div>
+            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-4">Sections</div>
             <MenuButton id="profile" label="Profile Overview" icon={User} />
             <MenuButton id="education" label="Education" icon={GraduationCap} />
             <MenuButton id="experience" label="Experience" icon={Briefcase} />
@@ -289,39 +317,39 @@ const ResumeApp = () => {
             <MenuButton id="skills" label="Skills" icon={Cpu} />
           </div>
   
-          <div className="pt-4 border-t border-white/10">
-            <button onClick={() => window.print()} className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors">
-               <Download size={14}/> Download PDF
+          <div className="pt-4 border-t border-slate-100 md:border-white/10 mt-auto">
+            <button onClick={() => window.print()} className="w-full py-3 md:py-2.5 bg-blue-600 md:bg-white/5 hover:bg-blue-700 md:hover:bg-white/10 text-white md:text-gray-300 text-sm md:text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors shadow-md md:shadow-none">
+               <Download size={16}/> Download Resume
             </button>
           </div>
         </div>
   
         {/* Right Content Area */}
-        <div className="flex-1 bg-slate-50 p-6 md:p-12 overflow-y-auto h-full">
-          <div className="max-w-3xl mx-auto">
+        <div className="flex-1 bg-slate-50 p-6 md:p-12 overflow-y-auto h-full w-full" onClick={() => isMobileMenuOpen && setIsMobileMenuOpen(false)}>
+          <div className="max-w-3xl mx-auto pb-20 md:pb-0">
             
             {/* PROFILE OVERVIEW */}
             {activeSection === 'profile' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <h1 className="text-3xl font-bold text-slate-900 mb-6">Profile Overview</h1>
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
-                   <p className="text-lg text-slate-600 leading-relaxed mb-6">{SYSTEM_DATA.profile.about}</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Profile Overview</h1>
+                <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
+                   <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-6">{SYSTEM_DATA.profile.about}</p>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg border border-slate-100">
                         <Mail className="text-blue-500" size={20} />
-                        <div>
+                        <div className="overflow-hidden">
                           <div className="text-xs text-slate-400 uppercase font-bold">Email</div>
-                          <div className="text-sm font-medium">{SYSTEM_DATA.profile.email}</div>
+                          <div className="text-sm font-medium truncate">{SYSTEM_DATA.profile.email}</div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg border border-slate-100">
                         <Phone className="text-green-500" size={20} />
                         <div>
                           <div className="text-xs text-slate-400 uppercase font-bold">Phone</div>
                           <div className="text-sm font-medium">{SYSTEM_DATA.profile.phone}</div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center gap-3 text-slate-600 p-3 bg-slate-50 rounded-lg border border-slate-100">
                         <Globe className="text-purple-500" size={20} />
                         <div>
                           <div className="text-xs text-slate-400 uppercase font-bold">Location</div>
@@ -336,22 +364,23 @@ const ResumeApp = () => {
             {/* EDUCATION */}
             {activeSection === 'education' && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                    <h1 className="text-3xl font-bold text-slate-900 mb-6">Education</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Education</h1>
                     <div className="space-y-6">
                         {SYSTEM_DATA.education.map((edu) => (
                             <div key={edu.id} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 border-l-4 border-l-green-500">
-                                <div className="flex justify-between items-start mb-2">
+                                <div className="flex flex-col md:flex-row justify-between items-start mb-2">
                                     <div>
-                                        <h3 className="text-xl font-bold text-slate-900">{edu.role}</h3>
+                                        <h3 className="text-lg md:text-xl font-bold text-slate-900">{edu.role}</h3>
                                         <div className="text-green-600 font-medium">{edu.company}</div>
                                     </div>
-                                    <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">{edu.date}</span>
+                                    <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold mt-2 md:mt-0 inline-block">{edu.date}</span>
                                 </div>
                                 <div className="text-sm text-slate-500 mb-4 flex items-center gap-2"><Globe size={14}/> {edu.location}</div>
                                 <ul className="space-y-2">
                                     {edu.points.map((pt, i) => (
                                         <li key={i} className="text-slate-600 text-sm flex gap-2">
-                                            <span className="text-green-500 mt-1.5">•</span> {pt}
+                                            <span className="text-green-500 mt-1.5 shrink-0">•</span> 
+                                            <span className="leading-relaxed">{pt}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -364,7 +393,7 @@ const ResumeApp = () => {
             {/* EXPERIENCE */}
             {activeSection === 'experience' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <h1 className="text-3xl font-bold text-slate-900 mb-6">Experience</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Experience</h1>
                 <div className="space-y-4">
                   {SYSTEM_DATA.experience.map((item) => (
                     <div 
@@ -374,7 +403,7 @@ const ResumeApp = () => {
                     >
                         <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-lg ${item.color} bg-opacity-10 flex items-center justify-center text-2xl`}>
+                                <div className={`w-12 h-12 rounded-lg ${item.color} bg-opacity-10 flex items-center justify-center text-2xl shrink-0`}>
                                     <Briefcase size={24} className={item.color.replace('bg-', 'text-')} />
                                 </div>
                                 <div>
@@ -382,8 +411,8 @@ const ResumeApp = () => {
                                     <div className="text-sm text-slate-500 font-medium">{item.company}</div>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
-                                <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{item.date}</span>
+                            <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto mt-2 md:mt-0">
+                                <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full whitespace-nowrap">{item.date}</span>
                                 <ChevronDown size={20} className={`text-slate-400 transition-transform duration-300 ${expandedExp === item.id ? 'rotate-180 text-blue-500' : ''}`} />
                             </div>
                         </div>
@@ -419,7 +448,7 @@ const ResumeApp = () => {
             {/* PROJECTS */}
             {activeSection === 'projects' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <h1 className="text-3xl font-bold text-slate-900 mb-6">Projects</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">Projects</h1>
                 <div className="grid grid-cols-1 gap-6">
                     {SYSTEM_DATA.projects.map((proj, idx) => (
                         <div 
@@ -429,7 +458,7 @@ const ResumeApp = () => {
                         >
                              <div className="flex justify-between items-start mb-4">
                                  <div className="flex items-center gap-4">
-                                     <div className="text-4xl bg-slate-50 p-2 rounded-lg">{proj.icon}</div>
+                                     <div className="text-4xl bg-slate-50 p-2 rounded-lg shrink-0">{proj.icon}</div>
                                      <div>
                                          <h4 className="font-bold text-slate-900 text-lg">{proj.title}</h4>
                                          <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md mt-1 inline-block">{proj.tech}</span>
@@ -469,7 +498,7 @@ const ResumeApp = () => {
             {/* SKILLS */}
             {activeSection === 'skills' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <h1 className="text-3xl font-bold text-slate-900 mb-8">Technical Skills</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Technical Skills</h1>
                 <div className="grid gap-8">
                     <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                         <h4 className="text-sm font-bold text-blue-600 mb-4 uppercase flex items-center gap-2"><Code size={18}/> Languages</h4>
@@ -773,7 +802,7 @@ const CalendarApp = () => {
 const TerminalApp = () => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
-    { type: 'output', content: 'Welcome to AnuragOS Terminal' },
+    { type: 'output', content: 'Welcome to AnuragOS Mobile Terminal' },
     { type: 'output', content: 'Type "help" to see commands.' }
   ]);
   const bottomRef = useRef(null);
@@ -875,7 +904,7 @@ const PhoneApp = () => {
              <img src={SYSTEM_DATA.profile.avatar} className="w-full h-full object-cover" />
         </div>
         <div className="text-3xl font-light tracking-widest mb-2 text-center">{number}</div>
-        <div className="text-sm text-blue-400">Calling Anurag...</div>
+        <div className="text-sm text-blue-400">Calling Mobile...</div>
       </div>
       
       <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto mb-8">
@@ -1019,6 +1048,16 @@ const App = () => {
       setActiveAppId(null);
       setIsAnyAppMaximized(false); // Minimized apps aren't full screen
   }
+  
+  // Effect to check if resume app is open and maximized in mobile view to hide dock
+  useEffect(() => {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile && openApps.includes('resume')) {
+          setIsAnyAppMaximized(true);
+      } else if (isMobile && openApps.length === 0) {
+           setIsAnyAppMaximized(false);
+      }
+  }, [openApps]);
 
   return (
     <div className="h-[100dvh] w-screen bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center overflow-hidden font-sans selection:bg-blue-500/30 relative">
@@ -1028,7 +1067,7 @@ const App = () => {
 
       <TopBar />
 
-      {/* DESKTOP / MOBILE APP GRID */}
+      {/* DESKTOP / MOBILE APP GRID - Removed Call, kept Meeting as requested */}
       <div className="pt-20 px-4 md:px-6 grid grid-cols-4 md:flex md:flex-col gap-x-4 gap-y-8 md:gap-6 w-full md:w-fit mx-auto md:mx-0 place-items-center md:place-items-start">
         {APPS.filter(app => !['mail', 'phone', 'linkedin', 'github', 'gemini'].includes(app.id)).map(app => (
           <div 
@@ -1048,7 +1087,7 @@ const App = () => {
       <AnimatePresence>
         {openApps.map(appId => {
           const app = APPS.find(a => a.id === appId);
-          if (!app || minimizedApps.includes(appId)) return null;
+          if (minimizedApps.includes(appId)) return null;
           
           return (
             <Window 
@@ -1065,80 +1104,76 @@ const App = () => {
       </AnimatePresence>
 
       {/* MOBILE BOTTOM DOCK (iOS Style) - Hides if maximized */}
-      {!isAnyAppMaximized && (
-          <div className="md:hidden fixed bottom-4 left-4 right-4 z-50 transition-all duration-300">
-            <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 flex justify-between items-center shadow-2xl">
-              {/* Phone */}
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-                 <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
-                   <Phone size={24} className="text-white" fill="currentColor" />
-                 </div>
-              </div>
-              {/* Mail */}
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-                 <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center shadow-lg">
-                   <Mail size={24} className="text-white" />
-                 </div>
-              </div>
-               {/* Gemini (Assistant) */}
-               <div onClick={() => handleAppClick(APPS.find(a => a.id === 'gemini'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-                 <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg">
-                   <Sparkles size={24} className="text-white" />
-                 </div>
-              </div>
-              {/* LinkedIn */}
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'linkedin'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-                 <div className="w-12 h-12 rounded-full bg-[#0077b5] flex items-center justify-center shadow-lg">
-                   <Linkedin size={24} className="text-white" fill="currentColor" />
-                 </div>
-              </div>
-              {/* Github */}
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'github'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
-                 <div className="w-12 h-12 rounded-full bg-[#24292e] flex items-center justify-center shadow-lg">
-                   <Github size={24} className="text-white" />
-                 </div>
-              </div>
-            </div>
+      <div className={`md:hidden fixed bottom-4 left-4 right-4 z-50 transition-all duration-300 ${isAnyAppMaximized ? 'translate-y-[150%] opacity-0' : 'translate-y-0 opacity-100'}`}>
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 flex justify-between items-center shadow-2xl">
+          {/* Phone */}
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+             <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
+               <Phone size={24} className="text-white" fill="currentColor" />
+             </div>
           </div>
-      )}
+          {/* Mail */}
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+             <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center shadow-lg">
+               <Mail size={24} className="text-white" />
+             </div>
+          </div>
+           {/* Gemini (Assistant) */}
+           <div onClick={() => handleAppClick(APPS.find(a => a.id === 'gemini'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+             <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg">
+               <Sparkles size={24} className="text-white" />
+             </div>
+          </div>
+          {/* LinkedIn */}
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'linkedin'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+             <div className="w-12 h-12 rounded-full bg-[#0077b5] flex items-center justify-center shadow-lg">
+               <Linkedin size={24} className="text-white" fill="currentColor" />
+             </div>
+          </div>
+          {/* Github */}
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'github'))} className="flex flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform">
+             <div className="w-12 h-12 rounded-full bg-[#24292e] flex items-center justify-center shadow-lg">
+               <Github size={24} className="text-white" />
+             </div>
+          </div>
+        </div>
+      </div>
 
       {/* DESKTOP DOCK (Mac Style) - Hides if maximized */}
-      {!isAnyAppMaximized && (
-          <div className="hidden md:block fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300">
-            <div className="flex items-end gap-3 px-4 py-3 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl">
-              {APPS.filter(a => !['mail', 'phone', 'calendar', 'gemini'].includes(a.id)).map(app => (
-                <div key={app.id} className="relative group">
-                   <button 
-                    onClick={() => handleAppClick(app)}
-                    className={`p-3 rounded-xl transition-all duration-300 ease-out hover:-translate-y-2 ${activeAppId === app.id && !minimizedApps.includes(app.id) ? 'bg-white/20 ring-1 ring-white/30' : 'hover:bg-white/10'}`}
-                  >
-                    {React.cloneElement(app.icon, { size: 24 })}
-                  </button>
-                  {(openApps.includes(app.id) || minimizedApps.includes(app.id)) && (
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
-                  )}
-                </div>
-              ))}
-              <div className="w-px h-8 bg-white/10 mx-1"></div>
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'gemini'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
-                 <Sparkles size={24} className="text-purple-400" />
-                 {(openApps.includes('gemini') || minimizedApps.includes('gemini')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
-              </div>
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'calendar'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
-                <Calendar size={24} className="text-red-500" />
-                {(openApps.includes('calendar') || minimizedApps.includes('calendar')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
-              </div>
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
-                <Mail size={24} className="text-blue-400" />
-                 {(openApps.includes('mail') || minimizedApps.includes('mail')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
-              </div>
-              <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
-                 <Phone size={24} className="text-green-400" />
-                 {(openApps.includes('phone') || minimizedApps.includes('phone')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
-              </div>
+      <div className={`hidden md:block fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${isAnyAppMaximized ? 'translate-y-[150%] opacity-0' : 'translate-y-0 opacity-100'}`}>
+        <div className="flex items-end gap-3 px-4 py-3 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl">
+          {APPS.filter(a => !['mail', 'phone', 'calendar', 'gemini'].includes(a.id)).map(app => (
+            <div key={app.id} className="relative group">
+               <button 
+                onClick={() => handleAppClick(app)}
+                className={`p-3 rounded-xl transition-all duration-300 ease-out hover:-translate-y-2 ${activeAppId === app.id && !minimizedApps.includes(app.id) ? 'bg-white/20 ring-1 ring-white/30' : 'hover:bg-white/10'}`}
+              >
+                {React.cloneElement(app.icon, { size: 24 })}
+              </button>
+              {(openApps.includes(app.id) || minimizedApps.includes(app.id)) && (
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+              )}
             </div>
+          ))}
+          <div className="w-px h-8 bg-white/10 mx-1"></div>
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'gemini'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+             <Sparkles size={24} className="text-purple-400" />
+             {(openApps.includes('gemini') || minimizedApps.includes('gemini')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
           </div>
-      )}
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'calendar'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+            <Calendar size={24} className="text-red-500" />
+            {(openApps.includes('calendar') || minimizedApps.includes('calendar')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+          </div>
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'mail'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+            <Mail size={24} className="text-blue-400" />
+             {(openApps.includes('mail') || minimizedApps.includes('mail')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+          </div>
+          <div onClick={() => handleAppClick(APPS.find(a => a.id === 'phone'))} className="p-3 rounded-xl hover:bg-white/10 hover:-translate-y-2 transition-all cursor-pointer relative">
+             <Phone size={24} className="text-green-400" />
+             {(openApps.includes('phone') || minimizedApps.includes('phone')) && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>}
+          </div>
+        </div>
+      </div>
 
     </div>
   );
