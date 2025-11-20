@@ -7,6 +7,7 @@ import {
   ArrowLeft, Signal, Phone, Send, Delete, Calendar, Clock, CheckCircle, ChevronDown, Minimize2, Sparkles, MessageSquare, GraduationCap, BookOpen, Download, Menu, Trophy, Award, Star, ShieldCheck
 } from 'lucide-react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import profile from './assets/profile.jpg';
 
 // --- CONFIGURATION ---
 // ⚠️ REPLACE THIS WITH YOUR ACTUAL GEMINI API KEY
@@ -22,10 +23,11 @@ const SYSTEM_DATA = {
     location: "New Delhi, India",
     about: "Backend specialist transforming legacy systems into scalable microservices. Expert in Java Spring Boot, Azure Cloud, and Data Structures.",
     fullBio: "Dedicated System Engineer and Backend Developer with a focus on building robust, scalable microservices using Java Spring Boot and Azure Data Factory (ADF). Proven ability to enhance system efficiency and reliability by migrating legacy ETL jobs and designing high-performance RESTful APIs. My expertise includes optimizing database performance, where I boosted application responsiveness by 40% for real-time analytics through the integration of Redis lookup and Azure Cosmos DB. I excel at cross-functional collaboration, SQL query optimization, and data modeling. Additionally, I maintain a strong coding foundation as a Knight on LeetCode (1880+ contest rating), with 500+ questions solved, and I am adept in full-stack technologies like React.js and MongoDB for rapid prototyping and solution delivery. I am passionate about leveraging technical skills to drive innovation and measurable outcomes.",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anurag&backgroundColor=b6e3f4&clothing=blazerAndShirt",
+    // Use a path to your image in the public/assets (e.g. public/assets/avatar.jpg) or adjust as needed
+    avatar: profile,
     social: {
       linkedin: "https://www.linkedin.com/in/anurag-91a137203/",
-      github: "https://github.com/nigdifg" 
+      github: "https://github.com/nigdifg"
     },
     topSkills: ["Java", "Spring Boot", "React.js", "JavaScript", "Azure ADF", "RESTful APIs", "Microservices", "SQL", "Redis"]
   },
