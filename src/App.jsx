@@ -137,13 +137,18 @@ const TopBar = () => {
         <span className="opacity-70 hover:opacity-100 cursor-pointer">Learner</span>
       </div>
 
-      <div className="md:hidden flex items-center gap-2">
-         <span className="font-semibold">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+      <div className="md:hidden flex w-full items-center justify-between relative">
+         <span className="font-semibold opacity-0">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+         <span className="absolute left-1/2 transform -translate-x-1/2 font-bold text-blue-400 text-sm tracking-wide">Anurag's OS</span>
+         <div className="flex items-center gap-1 opacity-80">
+            <Signal size={14} />
+            <Wifi size={14} />
+            <Battery size={14} />
+         </div>
       </div>
 
-      <div className="flex items-center gap-3 md:gap-4">
+      <div className="hidden md:flex items-center gap-3 md:gap-4">
         <div className="flex items-center gap-1 md:gap-2 opacity-80">
-          <Signal size={14} className="md:hidden" />
           <Wifi size={14} />
           <Battery size={14} />
         </div>
@@ -199,13 +204,19 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
       `}
     >
       {/* Title Bar */}
-      <div className={`h-12 md:h-10 flex items-center justify-between px-4 cursor-grab active:cursor-grabbing ${isMobile ? 'bg-slate-100 pt-safe-top border-b border-slate-200' : 'bg-white/5 border-b border-white/5'}`} onDoubleClick={!isMobile ? toggleMaximize : undefined}>
+      <div className={`flex items-center justify-between px-4 cursor-grab active:cursor-grabbing 
+        ${isMobile ? 'bg-slate-100 pt-safe-top border-b border-slate-200 h-auto pb-2' : 'bg-white/5 border-b border-white/5 h-12'}`} 
+        onDoubleClick={!isMobile ? toggleMaximize : undefined}
+      >
+        
+        {/* Mobile Back Button - Increased Margin Top */}
         {isMobile && (
-          <button onClick={onClose} className="p-2 -ml-2 text-blue-600 flex items-center gap-1">
-            <ArrowLeft size={20} /> <span className="text-base font-medium">Back</span>
+          <button onClick={onClose} className="p-2 -ml-2 text-blue-600 flex items-center gap-1 active:bg-slate-200 rounded-lg transition-colors mt-8"> 
+            <ArrowLeft size={24} /> <span className="text-lg font-medium">Back</span>
           </button>
         )}
 
+        {/* Desktop Controls */}
         {!isMobile && (
           <div className="flex items-center gap-2 group">
             <button onClick={onClose} className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-black/50 hover:text-black">
@@ -220,22 +231,20 @@ const Window = ({ app, onClose, onMinimize, isFocused, onFocus, onMaximizeToggle
           </div>
         )}
 
-        <div className={`text-base md:text-sm font-medium flex items-center gap-2 select-none ${isMobile ? 'text-slate-900' : 'text-gray-200 md:text-gray-400'}`}>
-          {!isMobile && app.icon} {app.title}
-        </div>
+        {/* Window Title - Hidden on Mobile for cleaner look, or adjust spacing if needed */}
+        {!isMobile && (
+          <div className="text-sm font-medium text-gray-400 flex items-center gap-2 select-none">
+             {app.icon} {app.title}
+          </div>
+        )}
         
+        {/* Spacer */}
         <div className="w-10"></div>
       </div>
 
       <div className={`flex-1 overflow-y-auto custom-scrollbar p-0 relative ${isMobile ? 'bg-slate-50' : 'bg-[#0f0f0f]'}`}>
         {app.content}
       </div>
-
-      {isMobile && (
-        <div className="absolute bottom-0 left-0 w-full h-6 bg-transparent flex justify-center items-end pb-2 pointer-events-none">
-          <div className="w-32 h-1 bg-black/20 rounded-full"></div>
-        </div>
-      )}
     </motion.div>
   );
 };
@@ -272,7 +281,7 @@ const ResumeApp = () => {
     return (
       <div className="flex flex-col md:flex-row h-full bg-white text-slate-800 overflow-hidden relative">
         
-        {/* Mobile Header / Menu Toggle */}
+        {/* Mobile Header / Menu Toggle - Added margin top for spacing */}
         <div className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between z-20 sticky top-0 shadow-sm">
             <div className="flex items-center gap-3">
                 <img src={SYSTEM_DATA.profile.avatar} className="w-10 h-10 rounded-full border border-slate-200" />
@@ -325,7 +334,7 @@ const ResumeApp = () => {
         </div>
   
         {/* Right Content Area */}
-        <div className="flex-1 bg-slate-50 p-6 md:p-12 overflow-y-auto h-full w-full" onClick={() => isMobileMenuOpen && setIsMobileMenuOpen(false)}>
+        <div className="flex-1 bg-slate-50 p-6 md:p-12 overflow-y-auto h-full w-full pb-24 md:pb-12" onClick={() => isMobileMenuOpen && setIsMobileMenuOpen(false)}>
           <div className="max-w-3xl mx-auto pb-20 md:pb-0">
             
             {/* PROFILE OVERVIEW */}
@@ -1052,7 +1061,7 @@ const App = () => {
   // Effect to check if resume app is open and maximized in mobile view to hide dock
   useEffect(() => {
       const isMobile = window.innerWidth < 768;
-      if (isMobile && openApps.includes('resume')) {
+      if (isMobile && openApps.length > 0) {
           setIsAnyAppMaximized(true);
       } else if (isMobile && openApps.length === 0) {
            setIsAnyAppMaximized(false);
