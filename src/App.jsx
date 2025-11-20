@@ -24,7 +24,7 @@ const SYSTEM_DATA = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anurag&backgroundColor=b6e3f4&clothing=blazerAndShirt",
     social: {
       linkedin: "https://www.linkedin.com/in/anurag-91a137203/",
-      github: "https://github.com/anurag" 
+      github: "https://github.com/nigdifg" 
     }
   },
   experience: [
@@ -61,7 +61,7 @@ const SYSTEM_DATA = {
     {
       id: 3,
       company: "Carikture",
-      role: "Web Developer",
+      role: "Full Stack Developer",
       date: "Apr 2022 - June 2022",
       location: "Ghaziabad",
       type: "Internship",
@@ -131,10 +131,10 @@ const TopBar = () => {
   return (
     <div className="h-8 md:h-8 bg-black/20 backdrop-blur-xl border-b border-white/5 text-white flex items-center justify-between px-4 md:px-4 text-xs select-none fixed top-0 w-full z-50 shadow-sm">
       <div className="hidden md:flex items-center gap-4">
-        <span className="font-bold text-blue-400"> AnuragOS</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">File</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">Edit</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">View</span>
+        <span className="font-bold text-blue-400">Anurag's OS</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Programmer</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Developer</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Learner</span>
       </div>
 
       <div className="md:hidden flex items-center gap-2">
@@ -773,7 +773,7 @@ const CalendarApp = () => {
 const TerminalApp = () => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
-    { type: 'output', content: 'Welcome to AnuragOS Mobile Terminal' },
+    { type: 'output', content: 'Welcome to AnuragOS Terminal' },
     { type: 'output', content: 'Type "help" to see commands.' }
   ]);
   const bottomRef = useRef(null);
@@ -875,7 +875,7 @@ const PhoneApp = () => {
              <img src={SYSTEM_DATA.profile.avatar} className="w-full h-full object-cover" />
         </div>
         <div className="text-3xl font-light tracking-widest mb-2 text-center">{number}</div>
-        <div className="text-sm text-blue-400">Calling Mobile...</div>
+        <div className="text-sm text-blue-400">Calling Anurag...</div>
       </div>
       
       <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto mb-8">
