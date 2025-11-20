@@ -25,7 +25,7 @@ const SYSTEM_DATA = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anurag&backgroundColor=b6e3f4&clothing=blazerAndShirt",
     social: {
       linkedin: "https://www.linkedin.com/in/anurag-91a137203/",
-      github: "https://github.com/anurag" 
+      github: "https://github.com/nigdifg" 
     },
     topSkills: ["Java", "Spring Boot", "React.js", "JavaScript", "Azure ADF", "RESTful APIs", "Microservices", "SQL", "Redis"]
   },
@@ -255,16 +255,22 @@ const SYSTEM_DATA = {
   },
   achievements: [
       {
-          title: "LeetCode Knight",
+          title: "Knight LeetCode ",
           desc: "Rating: 1886 | Solved 500+ Questions",
           icon: <Trophy size={20} className="text-yellow-500" />,
-          link: "https://leetcode.com/anurag"
+          link: "https://leetcode.com/anurag_bc"
       },
       {
           title: "Coding Ninja Expert",
           desc: "Level 7 | Qualified Codekaze Round 2",
           icon: <Award size={20} className="text-orange-500" />,
-          link: "#"
+          link: "https://www.naukri.com/code360/profile/anurag03"
+      },
+      {
+          title: "GeeksforGeeks",
+          desc: "Coding Score 1900+ | 580+ Problems Solved",
+          icon: <Award size={20} className="text-orange-700" />,
+          link: "https://www.geeksforgeeks.org/user/2006535/"
       }
   ]
 };
@@ -282,10 +288,10 @@ const TopBar = () => {
   return (
     <div className="h-8 md:h-8 bg-black/20 backdrop-blur-xl border-b border-white/5 text-white flex items-center justify-between px-4 md:px-4 text-xs select-none fixed top-0 w-full z-50 shadow-sm">
       <div className="hidden md:flex items-center gap-4">
-        <span className="font-bold text-blue-400"> AnuragOS</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">File</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">Edit</span>
-        <span className="opacity-70 hover:opacity-100 cursor-pointer">View</span>
+        <span className="font-bold text-blue-400">Anurag's OS</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Programmer</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Developer</span>
+        <span className="opacity-70 hover:opacity-100 cursor-pointer">Learner</span>
       </div>
 
       <div className="md:hidden flex w-full items-center justify-center relative">
